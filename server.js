@@ -9,13 +9,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: '*' })); // restrict to your domain in production
 app.use(express.json());
 
-/* ── email transporter (Gmail example) ─────────── */
+/* ── email transporter (Gmail via STARTTLS) ────── */
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // STARTTLS on 587 — more reliable on cloud hosts than 465
   auth: {
-    user: process.env.MAIL_USER, // your Gmail address
-    pass: process.env.MAIL_PASS  // Gmail App Password (not your login password)
-  }
+    user: process.env.MAIL_USER,                    // your Gmail address
+    pass: (process.env.MAIL_PASS || '').replace(/\s/g, '') // strip spaces from App Password
+  },
+  connectionTimeout: 10000, // fail fast (10s) instead of hanging
+  greetingTimeout: 10000
 });
 
 /* ── POST /api/contact ──────────────────────────── */
@@ -51,7 +55,8 @@ app.post('/api/contact', async (req, res) => {
     res.json({ success: true, message: 'Message sent successfully.' });
   } catch (err) {
     console.error('Mail error:', err.message);
-    res.status(500).json({ error: 'Failed to send email.' });
+    // TODO: remove `detail` before final — temporary debugging aid
+    res.status(500).json({ error: 'Failed to send email.', detail: err.message });
   }
 });
 

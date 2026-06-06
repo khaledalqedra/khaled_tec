@@ -32,7 +32,7 @@ function showToast(msg, type = 'success', duration = 4000) {
 // Uses localhost when testing on your machine, and the deployed
 // Render backend when the page is live on GitHub Pages.
 // ⚠️ After deploying to Render, make sure this URL matches your service URL.
-const BACKEND_URL = 'https://khaled-tec-backend.onrender.com';
+const BACKEND_URL = 'https://khaled-tec.onrender.com';
 const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 const API_URL = (isLocal ? 'http://localhost:3000' : BACKEND_URL) + '/api/contact';
 
