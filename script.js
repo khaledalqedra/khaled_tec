@@ -29,7 +29,12 @@ function showToast(msg, type = 'success', duration = 4000) {
 }
 
 /* ── CONTACT FORM → Express backend ───────────── */
-const API_URL = 'http://localhost:3000/api/contact'; // change to your deployed URL
+// Uses localhost when testing on your machine, and the deployed
+// Render backend when the page is live on GitHub Pages.
+// ⚠️ After deploying to Render, make sure this URL matches your service URL.
+const BACKEND_URL = 'https://khaled-tec-backend.onrender.com';
+const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+const API_URL = (isLocal ? 'http://localhost:3000' : BACKEND_URL) + '/api/contact';
 
 document.getElementById('contactForm').addEventListener('submit', async e => {
   e.preventDefault();
