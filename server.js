@@ -15,6 +15,18 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Where the contact messages get delivered (your inbox)
 const MAIL_TO = process.env.MAIL_TO || 'khaledalqedra4@gmail.com';
 
+/* ── GET / — simple status page (so the URL isn't blank) ── */
+app.get('/', (req, res) => {
+  res.send(`
+    <html><head><title>Khaled Portfolio Backend</title></head>
+    <body style="font-family:system-ui;background:#111114;color:#f0f0f5;text-align:center;padding:4rem;">
+      <h1>✅ Backend is running</h1>
+      <p>This is the API for Khaled Alqedra's portfolio contact form.</p>
+      <p>View the website: <a style="color:#c77dff" href="https://khaledalqedra.github.io/khaled_tec/">khaledalqedra.github.io/khaled_tec</a></p>
+    </body></html>
+  `);
+});
+
 /* ── POST /api/contact ──────────────────────────── */
 app.post('/api/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;
