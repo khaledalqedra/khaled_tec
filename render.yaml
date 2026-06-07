@@ -6,7 +6,7 @@ services:
     buildCommand: npm install
     startCommand: node server.js
     envVars:
-      - key: MAIL_USER
-        sync: false   # set in Render dashboard
-      - key: MAIL_PASS
-        sync: false   # set in Render dashboard (Gmail App Password)
+      - key: RESEND_API_KEY
+        sync: false   # set in Render dashboard (from resend.com)
+      - key: MAIL_TO
+        sync: false   # your inbox, e.g. khaledalqedra4@gmail.com

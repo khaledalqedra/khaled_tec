@@ -23,10 +23,10 @@ khaled_tec/
 # 1. Install dependencies (already done if node_modules exists)
 npm install
 
-# 2. Set your Gmail App Password in .env
-#    Google Account → Security → 2-Step Verification → App Passwords
-#    Copy the 16-char password into .env as MAIL_PASS
-#    (Your normal Gmail login password will NOT work — it must be an App Password.)
+# 2. Set your Resend API key in .env
+#    Sign up free at https://resend.com → API Keys → Create
+#    Copy the key (starts with "re_") into .env as RESEND_API_KEY
+#    MAIL_TO is the inbox that receives the messages.
 
 # 3. Start the server
 npm start         # or: npm run dev   (auto-restarts on changes)

@@ -1,7 +1,7 @@
 require('dotenv').config();
-const express    = require('express');
-const cors       = require('cors');
-const nodemailer = require('nodemailer');
+const express = require('express');
+const cors    = require('cors');
+const { Resend } = require('resend');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -9,18 +9,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: '*' })); // restrict to your domain in production
 app.use(express.json());
 
-/* ── email transporter (Gmail via STARTTLS) ────── */
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // STARTTLS on 587 — more reliable on cloud hosts than 465
-  auth: {
-    user: process.env.MAIL_USER,                    // your Gmail address
-    pass: (process.env.MAIL_PASS || '').replace(/\s/g, '') // strip spaces from App Password
-  },
-  connectionTimeout: 10000, // fail fast (10s) instead of hanging
-  greetingTimeout: 10000
-});
+/* ── Resend email client (sends over HTTPS) ────── */
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Where the contact messages get delivered (your inbox)
+const MAIL_TO = process.env.MAIL_TO || 'khaledalqedra4@gmail.com';
 
 /* ── POST /api/contact ──────────────────────────── */
 app.post('/api/contact', async (req, res) => {
@@ -36,10 +29,10 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
-    await transporter.sendMail({
-      from:    `"Portfolio Contact" <${process.env.MAIL_USER}>`,
-      to:      process.env.MAIL_USER,
-      replyTo: email,
+    const { error } = await resend.emails.send({
+      from:    'Portfolio Contact <onboarding@resend.dev>', // Resend's shared sender (no domain needed)
+      to:      MAIL_TO,
+      replyTo: email, // hitting "reply" answers the visitor directly
       subject: `[Portfolio] ${subject}`,
       html: `
         <h2>New message from your portfolio</h2>
@@ -50,6 +43,8 @@ app.post('/api/contact', async (req, res) => {
         <p>${message.replace(/\n/g, '<br/>')}</p>
       `
     });
+
+    if (error) throw new Error(error.message || JSON.stringify(error));
 
     console.log(`Contact form submission from ${name} <${email}>`);
     res.json({ success: true, message: 'Message sent successfully.' });
