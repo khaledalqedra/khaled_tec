@@ -15,6 +15,18 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Where the contact messages get delivered (your inbox)
 const MAIL_TO = process.env.MAIL_TO || 'khaledalqedra4@gmail.com';
 
+/* ── TEMP diagnostic (remove later) ─────────────── */
+app.get('/api/debug', (req, res) => {
+  const k = process.env.RESEND_API_KEY || '';
+  res.json({
+    keyPresent: k.length > 0,
+    keyLength: k.length,
+    keyPrefix: k.slice(0, 5),
+    keyHasSpaces: /\s/.test(k),
+    mailTo: process.env.MAIL_TO || '(not set)'
+  });
+});
+
 /* ── POST /api/contact ──────────────────────────── */
 app.post('/api/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;
